@@ -21,12 +21,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const finalTemp = parseFloat(document.getElementById('final-temp').value);
         const initialLength = parseFloat(document.getElementById('initial-length').value);
         
-        if (isNaN(alpha) {
+        if (isNaN(alpha)) {
             showError("Please enter a valid coefficient of thermal expansion");
             return;
         }
         
-        if (isNaN(initialTemp) {
+        if (isNaN(initialTemp)) {
             showError("Please enter a valid initial temperature");
             return;
         }
@@ -136,6 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Event listeners for buttons
     document.getElementById('calculate-btn').addEventListener('click', calculateLinearExpansion);
-    document.getElementById('calculate-area-btn').addEventListener('click', calculateAreaExpansion);
+    document.getElementById('calculate-area-btn').addEventListener('click', calculateAreaExpansion);  // Fixed typo here
     document.getElementById('calculate-volume-btn').addEventListener('click', calculateVolumeExpansion);
 });
