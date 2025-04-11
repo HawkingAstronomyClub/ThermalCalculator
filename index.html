@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thermal Expansion Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Thermal Expansion Calculator</h1>
+            <p>Calculate how materials expand or contract with temperature changes</p>
+        </header>
+
+        <main>
+            <div class="calculator">
+                <div class="input-section">
+                    <div class="form-group">
+                        <label for="material">Material:</label>
+                        <select id="material" class="form-control">
+                            <option value="1.2e-5">Aluminum (α = 23 × 10⁻⁶/°C)</option>
+                            <option value="1.7e-5">Brass (α = 19 × 10⁻⁶/°C)</option>
+                            <option value="1.2e-5">Concrete (α = 12 × 10⁻⁶/°C)</option>
+                            <option value="9e-6">Copper (α = 17 × 10⁻⁶/°C)</option>
+                            <option value="8.5e-6">Glass (ordinary) (α = 9 × 10⁻⁶/°C)</option>
+                            <option value="1.1e-5">Iron/Wrought Iron (α = 12 × 10⁻⁶/°C)</option>
+                            <option value="1.3e-5">Steel (α = 12 × 10⁻⁶/°C)</option>
+                            <option value="custom">Custom (enter α value)</option>
+                        </select>
+                    </div>
+
+                    <div id="custom-alpha-container" class="form-group" style="display: none;">
+                        <label for="custom-alpha">Coefficient of Thermal Expansion (α):</label>
+                        <input type="number" id="custom-alpha" class="form-control" step="0.000001" placeholder="e.g., 0.000012 for steel">
+                        <span class="unit">/°C</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="initial-temp">Initial Temperature:</label>
+                        <input type="number" id="initial-temp" class="form-control" value="20">
+                        <span class="unit">°C</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="final-temp">Final Temperature:</label>
+                        <input type="number" id="final-temp" class="form-control" value="100">
+                        <span class="unit">°C</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="initial-length">Initial Length:</label>
+                        <input type="number" id="initial-length" class="form-control" value="1">
+                        <span class="unit">meters</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Calculate:</label>
+                        <div class="btn-group">
+                            <button id="calculate-btn" class="btn btn-primary">Linear Expansion</button>
+                            <button id="calculate-area-btn" class="btn">Area Expansion</button>
+                            <button id="calculate-volume-btn" class="btn">Volume Expansion</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <h3>Results</h3>
+                    <div id="result" class="result-box">
+                        <p>Enter values and click calculate</p>
+                    </div>
+                    <div class="formula">
+                        <h4>Formula:</h4>
+                        <p id="formula-text">ΔL = L₀ × α × ΔT</p>
+                        <p>Where:</p>
+                        <ul>
+                            <li>ΔL = Change in length</li>
+                            <li>L₀ = Original length</li>
+                            <li>α = Coefficient of thermal expansion</li>
+                            <li>ΔT = Change in temperature (T<sub>final</sub> - T<sub>initial</sub>)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>About Thermal Expansion</h2>
+                <p>Thermal expansion is the tendency of matter to change its shape, area, and volume in response to a change in temperature.</p>
+                <p>Most materials expand when heated and contract when cooled. The degree of expansion divided by the change in temperature is called the material's coefficient of thermal expansion.</p>
+                
+                <h3>Common Applications:</h3>
+                <ul>
+                    <li>Bridge expansion joints</li>
+                    <li>Railway track design</li>
+                    <li>Pipe systems in engineering</li>
+                    <li>Thermostats and bimetallic strips</li>
+                    <li>Precision instrument design</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p>Thermal Expansion Calculator &copy; <span id="year"></span></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
