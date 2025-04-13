@@ -2,20 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thermal Expansion Calculator</title>
-    
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#0a0e17">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
-    
-    <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
             /* Light Mode Colors */
@@ -116,13 +106,6 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--text-color);
-        }
-
-        #installBtn {
-            position: absolute;
-            top: 70px;
-            left: 20px;
-            display: none;
         }
 
         h1 {
@@ -471,9 +454,6 @@
             <button class="theme-toggle" id="themeToggle">
                 <i class="fas fa-moon"></i>
             </button>
-            <button id="installBtn" class="btn btn-primary">
-                <i class="fas fa-download"></i> Install App
-            </button>
             <div class="auth-buttons">
                 <button id="signInBtn" class="btn btn-secondary">Sign In</button>
                 <button id="signUpBtn" class="btn btn-primary">Sign Up</button>
@@ -651,10 +631,8 @@
         </div>
     </div>
 
-    <!-- Firebase and other scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-    
     <script>
         // Initialize Firebase with your config
         const firebaseConfig = {
@@ -669,38 +647,6 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-
-        // PWA Installation
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBtn').style.display = 'block';
-        });
-
-        document.getElementById('installBtn').addEventListener('click', () => {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(choiceResult => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted install');
-                    document.getElementById('installBtn').style.display = 'none';
-                }
-                deferredPrompt = null;
-            });
-        });
-
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
 
         // DOM elements
         const signInBtn = document.getElementById('signInBtn');
