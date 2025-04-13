@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thermal Expansion Calculator</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0a0e17">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Light Mode Colors */
+            --primary-light: #4285f4;
+            --secondary-light: #34a853;
+            --danger-light: #ea4335;
+            --text-light: #333;
+            --bg-light: #f5f5f5;
+            --card-light: white;
+            --border-light: #ddd;
+            
+            /* Dark Mode Colors */
+            --primary-dark: #4fc3f7;
+            --secondary-dark: #a5d8ff;
+            --danger-dark: #ff6b6b;
+            --text-dark: #fff;
+            --bg-dark: #0a0e17;
+            --card-dark: rgba(10, 10, 26, 0.9);
+            --border-dark: rgba(79, 195, 247, 0.3);
+            
+            /* Current Mode Colors */
+            --primary-color: var(--primary-light);
+            --secondary-color: var(--secondary-light);
+            --danger-color: var(--danger-light);
+            --text-color: var(--text-light);
+            --bg-color: var(--bg-light);
+            --card-color: var(--card-light);
+            --border-color: var(--border-light);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: var(--primary-dark);
+            --secondary-color: var(--secondary-dark);
+            --danger-color: var(--danger-dark);
+            --text-color: var(--text-dark);
+            --bg-color: var(--bg-dark);
+            --card-color: var(--card-dark);
+            --border-color: var(--border-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            min-height: 100vh;
+        }
+
+        [data-theme="dark"] body {
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(41, 98, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(198, 51, 255, 0.1) 0%, transparent 20%),
+                url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-1.2.1&auto=format&fit=crop&w=2048&q=80');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        #installBtn {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            display: none;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+            text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+        }
+
+        .calculator {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+            background-color: var(--card-color);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(5px);
+        }
+
+        .input-section, .result-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: rgba(18, 18, 42, 0.7);
+            color: var(--text-color);
+        }
+
+        [data-theme="light"] .form-control {
+            background-color: white;
+        }
+
+        select.form-control {
+            height: 42px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+        }
+
+        .unit {
+            margin-left: 10px;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            flex: 1;
+            font-family: 'Poppins', sans-serif;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 15px rgba(79, 195, 247, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.9) 0%, rgba(74, 20, 140, 0.9) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, rgba(48, 63, 159, 0.9) 0%, rgba(123, 31, 162, 0.9) 100%);
+            box-shadow: 0 0 25px rgba(79, 195, 247, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(11, 81, 139, 0.9) 0%, rgba(9, 109, 121, 0.9) 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, rgba(21, 101, 159, 0.9) 0%, rgba(29, 129, 141, 0.9) 100%);
+            box-shadow: 0 0 25px rgba(79, 195, 247, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, rgba(140, 20, 20, 0.9) 0%, rgba(183, 28, 28, 0.9) 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, rgba(160, 40, 40, 0.9) 0%, rgba(203, 48, 48, 0.9) 100%);
+            box-shadow: 0 0 25px rgba(255, 107, 107, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .btn:not(.btn-primary):not(.btn-secondary):not(.btn-danger) {
+            background: rgba(18, 18, 42, 0.7);
+            color: var(--text-color);
+        }
+
+        [data-theme="light"] .btn:not(.btn-primary):not(.btn-secondary):not(.btn-danger) {
+            background: #e9ecef;
+        }
+
+        .btn:not(.btn-primary):not(.btn-secondary):not(.btn-danger):hover {
+            background: rgba(28, 28, 62, 0.9);
+            box-shadow: 0 0 15px rgba(79, 195, 247, 0.3);
+        }
+
+        [data-theme="light"] .btn:not(.btn-primary):not(.btn-secondary):not(.btn-danger):hover {
+            background: #d1d7dc;
+        }
+
+        .result-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .result-box {
+            background: rgba(18, 18, 42, 0.7);
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            min-height: 100px;
+            border-left: 4px solid var(--primary-color);
+            color: var(--text-color);
+        }
+
+        [data-theme="light"] .result-box {
+            background-color: #f8f9fa;
+        }
+
+        .formula {
+            background: rgba(18, 18, 42, 0.7);
+            padding: 15px;
+            border-radius: 4px;
+            color: var(--text-color);
+        }
+
+        [data-theme="light"] .formula {
+            background-color: #f8f9fa;
+        }
+
+        .formula h4 {
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+
+        .info-section {
+            background-color: var(--card-color);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(5px);
+        }
+
+        .info-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .info-section h3 {
+            color: var(--secondary-color);
+            margin: 20px 0 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-color);
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Auth Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: var(--card-color);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            width: 80%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--text-color);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .auth-form h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .auth-message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Password toggle */
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Forgot password link */
+        .forgot-password {
+            text-align: right;
+            font-size: 14px;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .calculator {
+                flex-direction: column;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .auth-buttons {
+                position: static;
+                justify-content: center;
+                margin-bottom: 15px;
+            }
+            
+            .theme-toggle {
+                position: static;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="installBtn" class="btn btn-primary">
+                <i class="fas fa-download"></i> Install App
+            </button>
+            <div class="auth-buttons">
+                <button id="signInBtn" class="btn btn-secondary">Sign In</button>
+                <button id="signUpBtn" class="btn btn-primary">Sign Up</button>
+                <button id="signOutBtn" class="btn btn-danger" style="display: none;">Sign Out</button>
+                <span id="userEmail" style="display: none; margin-left: 10px; line-height: 36px;"></span>
+            </div>
+            <h1>Thermal Expansion Calculator</h1>
+            <p>Calculate how materials expand or contract with temperature changes</p>
+        </header>
+
+        <main>
+            <div class="calculator">
+                <div class="input-section">
+                    <div class="form-group">
+                        <label for="material">Material:</label>
+                        <select id="material" class="form-control">
+                            <option value="2.3e-5">Aluminum (α = 23 × 10⁻⁶/°C)</option>
+                            <option value="1.9e-5">Brass (α = 19 × 10⁻⁶/°C)</option>
+                            <option value="1.2e-5">Concrete (α = 12 × 10⁻⁶/°C)</option>
+                            <option value="1.7e-5">Copper (α = 17 × 10⁻⁶/°C)</option>
+                            <option value="9e-6">Glass (ordinary) (α = 9 × 10⁻⁶/°C)</option>
+                            <option value="1.2e-5">Iron/Wrought Iron (α = 12 × 10⁻⁶/°C)</option>
+                            <option value="1.2e-5">Steel (α = 12 × 10⁻⁶/°C)</option>
+                            <option value="custom">Custom (enter α value)</option>
+                        </select>
+                    </div>
+
+                    <div id="custom-alpha-container" class="form-group" style="display: none;">
+                        <label for="custom-alpha">Coefficient of Thermal Expansion (α):</label>
+                        <input type="number" id="custom-alpha" class="form-control" step="0.000001" placeholder="e.g., 0.000012 for steel">
+                        <span class="unit">/°C</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="initial-temp">Initial Temperature:</label>
+                        <input type="number" id="initial-temp" class="form-control" value="20">
+                        <span class="unit">°C</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="final-temp">Final Temperature:</label>
+                        <input type="number" id="final-temp" class="form-control" value="100">
+                        <span class="unit">°C</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="initial-length">Initial Length:</label>
+                        <input type="number" id="initial-length" class="form-control" value="1">
+                        <span class="unit">meters</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Calculate:</label>
+                        <div class="btn-group">
+                            <button id="calculate-btn" class="btn btn-primary">Linear Expansion</button>
+                            <button id="calculate-area-btn" class="btn">Area Expansion</button>
+                            <button id="calculate-volume-btn" class="btn">Volume Expansion</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <h3>Results</h3>
+                    <div id="result" class="result-box">
+                        <p>Enter values and click calculate</p>
+                    </div>
+                    <div class="formula">
+                        <h4>Formula:</h4>
+                        <p id="formula-text">ΔL = L₀ × α × ΔT</p>
+                        <p>Where:</p>
+                        <ul>
+                            <li>ΔL = Change in length</li>
+                            <li>L₀ = Original length</li>
+                            <li>α = Coefficient of thermal expansion</li>
+                            <li>ΔT = Change in temperature (T<sub>final</sub> - T<sub>initial</sub>)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>About Thermal Expansion</h2>
+                <p>Thermal expansion is the tendency of matter to change its shape, area, and volume in response to a change in temperature.</p>
+                <p>Most materials expand when heated and contract when cooled. The degree of expansion divided by the change in temperature is called the material's coefficient of thermal expansion.</p>
+                
+                <h3>Common Applications:</h3>
+                <ul>
+                    <li>Bridge expansion joints</li>
+                    <li>Railway track design</li>
+                    <li>Pipe systems in engineering</li>
+                    <li>Thermostats and bimetallic strips</li>
+                    <li>Precision instrument design</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p>Thermal Expansion Calculator &copy; <span id="year"></span></p>
+        </footer>
+    </div>
+
+    <!-- Auth Modals -->
+    <div id="signInModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="auth-form">
+                <h2>Sign In</h2>
+                <div id="signInMessage" class="auth-message"></div>
+                <div class="form-group">
+                    <label for="signInEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="signInEmail" class="form-control" placeholder="your@email.com" required>
+                    <p class="error-message" id="signInEmailError"></p>
+                </div>
+                <div class="form-group">
+                    <label for="signInPassword"><i class="fas fa-lock"></i> Password</label>
+                    <div class="password-container">
+                        <input type="password" id="signInPassword" class="form-control" placeholder="••••••••" required>
+                        <span class="toggle-password" onclick="togglePassword('signInPassword')"><i class="fas fa-eye"></i></span>
+                    </div>
+                    <p class="error-message" id="signInPasswordError"></p>
+                </div>
+                <div class="forgot-password" onclick="showForgotPassword()">Forgot password?</div>
+                <button id="submitSignIn" class="btn btn-primary">
+                    <span id="signInText">Sign In</span>
+                    <div id="signInSpinner" class="spinner"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="signUpModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="auth-form">
+                <h2>Sign Up</h2>
+                <div id="signUpMessage" class="auth-message"></div>
+                <div class="form-group">
+                    <label for="signUpEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="signUpEmail" class="form-control" placeholder="your@email.com" required>
+                    <p class="error-message" id="signUpEmailError"></p>
+                </div>
+                <div class="form-group">
+                    <label for="signUpPassword"><i class="fas fa-lock"></i> Password</label>
+                    <div class="password-container">
+                        <input type="password" id="signUpPassword" class="form-control" placeholder="•••••••• (min 6 characters)" required>
+                        <span class="toggle-password" onclick="togglePassword('signUpPassword')"><i class="fas fa-eye"></i></span>
+                    </div>
+                    <p class="error-message" id="signUpPasswordError"></p>
+                </div>
+                <button id="submitSignUp" class="btn btn-primary">
+                    <span id="signUpText">Sign Up</span>
+                    <div id="signUpSpinner" class="spinner"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="auth-form">
+                <h2>Reset Password</h2>
+                <div id="forgotPasswordMessage" class="auth-message"></div>
+                <div class="form-group">
+                    <label for="forgotPasswordEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="forgotPasswordEmail" class="form-control" placeholder="your@email.com" required>
+                    <p class="error-message" id="forgotPasswordEmailError"></p>
+                </div>
+                <button id="submitForgotPassword" class="btn btn-primary">
+                    <span id="forgotPasswordText">Send Reset Link</span>
+                    <div id="forgotPasswordSpinner" class="spinner"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase and other scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        // Initialize Firebase with your config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhtEQttdC08WOwX1YTPJcndXeCmTvIJ3A",
+            authDomain: "thermox-2a483.firebaseapp.com",
+            projectId: "thermox-2a483",
+            storageBucket: "thermox-2a483.appspot.com",
+            messagingSenderId: "805346358135",
+            appId: "1:805346358135:web:762fab58b4a75d07556772"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // PWA Installation
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').style.display = 'block';
+        });
+
+        document.getElementById('installBtn').addEventListener('click', () => {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(choiceResult => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted install');
+                    document.getElementById('installBtn').style.display = 'none';
+                }
+                deferredPrompt = null;
+            });
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // DOM elements
+        const signInBtn = document.getElementById('signInBtn');
+        const signUpBtn = document.getElementById('signUpBtn');
+        const signOutBtn = document.getElementById('signOutBtn');
+        const userEmailSpan = document.getElementById('userEmail');
+        const signInModal = document.getElementById('signInModal');
+        const signUpModal = document.getElementById('signUpModal');
+        const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+        const closeButtons = document.getElementsByClassName('close');
+        const submitSignIn = document.getElementById('submitSignIn');
+        const submitSignUp = document.getElementById('submitSignUp');
+        const submitForgotPassword = document.getElementById('submitForgotPassword');
+        const signInMessage = document.getElementById('signInMessage');
+        const signUpMessage = document.getElementById('signUpMessage');
+        const forgotPasswordMessage = document.getElementById('forgotPasswordMessage');
+        const themeToggle = document.getElementById('themeToggle');
+        const materialSelect = document.getElementById('material');
+        const customAlphaContainer = document.getElementById('custom-alpha-container');
+
+        // Set current year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
+
+        // Auth state observer
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in
+                signInBtn.style.display = 'none';
+                signUpBtn.style.display = 'none';
+                signOutBtn.style.display = 'block';
+                userEmailSpan.style.display = 'block';
+                userEmailSpan.textContent = user.email;
+                
+                // Check if email is verified
+                if (!user.emailVerified) {
+                    // You might want to prompt the user to verify their email
+                    console.log("Email not verified");
+                }
+            } else {
+                // User is signed out
+                signInBtn.style.display = 'block';
+                signUpBtn.style.display = 'block';
+                signOutBtn.style.display = 'none';
+                userEmailSpan.style.display = 'none';
+            }
+        });
+
+        // Open modals
+        signInBtn.addEventListener('click', () => {
+            signInModal.style.display = 'block';
+            signInMessage.style.display = 'none';
+            document.getElementById('signInEmail').focus();
+        });
+
+        signUpBtn.addEventListener('click', () => {
+            signUpModal.style.display = 'block';
+            signUpMessage.style.display = 'none';
+            document.getElementById('signUpEmail').focus();
+        });
+
+        // Close modals
+        for (let i = 0; i < closeButtons.length; i++) {
+            closeButtons[i].addEventListener('click', () => {
+                signInModal.style.display = 'none';
+                signUpModal.style.display = 'none';
+                forgotPasswordModal.style.display = 'none';
+            });
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === signInModal) {
+                signInModal.style.display = 'none';
+            }
+            if (event.target === signUpModal) {
+                signUpModal.style.display = 'none';
+            }
+            if (event.target === forgotPasswordModal) {
+                forgotPasswordModal.style.display = 'none';
+            }
+        });
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Show forgot password modal
+        function showForgotPassword() {
+            signInModal.style.display = 'none';
+            forgotPasswordModal.style.display = 'block';
+            document.getElementById('forgotPasswordEmail').focus();
+        }
+
+        // Sign in
+        submitSignIn.addEventListener('click', () => {
+            const email = document.getElementById('signInEmail').value.trim();
+            const password = document.getElementById('signInPassword').value.trim();
+            
+            // Clear previous errors
+            document.getElementById('signInEmailError').style.display = 'none';
+            document.getElementById('signInPasswordError').style.display = 'none';
+            
+            // Validate inputs
+            if (!email) {
+                document.getElementById('signInEmailError').textContent = 'Email is required';
+                document.getElementById('signInEmailError').style.display = 'block';
+                return;
+            }
+            
+            if (!password) {
+                document.getElementById('signInPasswordError').textContent = 'Password is required';
+                document.getElementById('signInPasswordError').style.display = 'block';
+                return;
+            }
+            
+            // Show loading spinner
+            document.getElementById('signInText').style.display = 'none';
+            document.getElementById('signInSpinner').style.display = 'block';
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log("User signed in:", userCredential.user);
+                    signInModal.style.display = 'none';
+                    
+                    // Check if email is verified
+                    if (!userCredential.user.emailVerified) {
+                        alert("Please verify your email first. Check your inbox for the verification link.");
+                        return auth.signOut();
+                    }
+                })
+                .catch(error => {
+                    console.error("Sign in error:", error);
+                    
+                    // Handle specific errors
+                    if (error.code === 'auth/user-not-found') {
+                        document.getElementById('signInEmailError').textContent = 'User not found';
+                        document.getElementById('signInEmailError').style.display = 'block';
+                    } else if (error.code === 'auth/wrong-password') {
+                        document.getElementById('signInPasswordError').textContent = 'Incorrect password';
+                        document.getElementById('signInPasswordError').style.display = 'block';
+                    } else if (error.code === 'auth/invalid-email') {
+                        document.getElementById('signInEmailError').textContent = 'Invalid email address';
+                        document.getElementById('signInEmailError').style.display = 'block';
+                    } else {
+                        signInMessage.textContent = error.message;
+                        signInMessage.className = 'auth-message error';
+                        signInMessage.style.display = 'block';
+                    }
+                })
+                .finally(() => {
+                    // Hide loading spinner
+                    document.getElementById('signInText').style.display = 'inline';
+                    document.getElementById('signInSpinner').style.display = 'none';
+                });
+        });
+
+        // Sign up
+        submitSignUp.addEventListener('click', () => {
+            const email = document.getElementById('signUpEmail').value.trim();
+            const password = document.getElementById('signUpPassword').value.trim();
+            
+            // Clear previous errors
+            document.getElementById('signUpEmailError').style.display = 'none';
+            document.getElementById('signUpPasswordError').style.display = 'none';
+            
+            // Validate inputs
+            if (!email) {
+                document.getElementById('signUpEmailError').textContent = 'Email is required';
+                document.getElementById('signUpEmailError').style.display = 'block';
+                return;
+            }
+            
+            if (!password) {
+                document.getElementById('signUpPasswordError').textContent = 'Password is required';
+                document.getElementById('signUpPasswordError').style.display = 'block';
+                return;
+            }
+            
+            if (password.length < 6) {
+                document.getElementById('signUpPasswordError').textContent = 'Password must be at least 6 characters';
+                document.getElementById('signUpPasswordError').style.display = 'block';
+                return;
+            }
+            
+            // Show loading spinner
+            document.getElementById('signUpText').style.display = 'none';
+            document.getElementById('signUpSpinner').style.display = 'block';
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log("User created:", userCredential.user);
+                    
+                    // Prompt for display name
+                    const displayName = prompt("Please enter your name:");
+                    if (!displayName) {
+                        alert("Name is required for registration");
+                        return userCredential.user.delete();
+                    }
+                    
+                    // Update profile with display name
+                    return userCredential.user.updateProfile({
+                        displayName: displayName
+                    }).then(() => {
+                        // Send email verification
+                        return userCredential.user.sendEmailVerification();
+                    }).then(() => {
+                        alert("Account created! Please check your email for verification. After verifying, you can log in.");
+                        signUpModal.style.display = 'none';
+                    });
+                })
+                .catch(error => {
+                    console.error("Sign up error:", error);
+                    
+                    // Handle specific errors
+                    if (error.code === 'auth/email-already-in-use') {
+                        document.getElementById('signUpEmailError').textContent = 'Email already in use';
+                        document.getElementById('signUpEmailError').style.display = 'block';
+                    } else if (error.code === 'auth/invalid-email') {
+                        document.getElementById('signUpEmailError').textContent = 'Invalid email address';
+                        document.getElementById('signUpEmailError').style.display = 'block';
+                    } else if (error.code === 'auth/weak-password') {
+                        document.getElementById('signUpPasswordError').textContent = 'Password should be at least 6 characters';
+                        document.getElementById('signUpPasswordError').style.display = 'block';
+                    } else {
+                        signUpMessage.textContent = error.message;
+                        signUpMessage.className = 'auth-message error';
+                        signUpMessage.style.display = 'block';
+                    }
+                })
+                .finally(() => {
+                    // Hide loading spinner
+                    document.getElementById('signUpText').style.display = 'inline';
+                    document.getElementById('signUpSpinner').style.display = 'none';
+                });
+        });
+
+        // Forgot password
+        submitForgotPassword.addEventListener('click', () => {
+            const email = document.getElementById('forgotPasswordEmail').value.trim();
+            
+            // Clear previous errors
+            document.getElementById('forgotPasswordEmailError').style.display = 'none';
+            
+            // Validate input
+            if (!email) {
+                document.getElementById('forgotPasswordEmailError').textContent = 'Email is required';
+                document.getElementById('forgotPasswordEmailError').style.display = 'block';
+                return;
+            }
+            
+            // Show loading spinner
+            document.getElementById('forgotPasswordText').style.display = 'none';
+            document.getElementById('forgotPasswordSpinner').style.display = 'block';
+            
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    forgotPasswordMessage.textContent = "Password reset email sent! Check your inbox.";
+                    forgotPasswordMessage.className = 'auth-message success';
+                    forgotPasswordMessage.style.display = 'block';
+                    console.log("Password reset email sent");
+                })
+                .catch(error => {
+                    console.error("Password reset error:", error);
+                    
+                    if (error.code === 'auth/user-not-found') {
+                        document.getElementById('forgotPasswordEmailError').textContent = 'User not found';
+                        document.getElementById('forgotPasswordEmailError').style.display = 'block';
+                    } else if (error.code === 'auth/invalid-email') {
+                        document.getElementById('forgotPasswordEmailError').textContent = 'Invalid email address';
+                        document.getElementById('forgotPasswordEmailError').style.display = 'block';
+                    } else {
+                        forgotPasswordMessage.textContent = error.message;
+                        forgotPasswordMessage.className = 'auth-message error';
+                        forgotPasswordMessage.style.display = 'block';
+                    }
+                })
+                .finally(() => {
+                    // Hide loading spinner
+                    document.getElementById('forgotPasswordText').style.display = 'inline';
+                    document.getElementById('forgotPasswordSpinner').style.display = 'none';
+                });
+        });
+
+        // Sign out
+        signOutBtn.addEventListener('click', () => {
+            auth.signOut()
+                .then(() => {
+                    console.log("User signed out");
+                })
+                .catch(error => {
+                    console.error("Sign out error:", error);
+                    alert("Error signing out: " + error.message);
+                });
+        });
+
+        // Material selection handler
+        materialSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customAlphaContainer.style.display = 'block';
+            } else {
+                customAlphaContainer.style.display = 'none';
+            }
+        });
+
+        // Calculation functions
+        function calculateLinearExpansion() {
+            const alpha = getAlphaValue();
+            const initialTemp = parseFloat(document.getElementById('initial-temp').value);
+            const finalTemp = parseFloat(document.getElementById('final-temp').value);
+            const initialLength = parseFloat(document.getElementById('initial-length').value);
+            
+            if (isNaN(alpha)) {
+                showError("Please enter a valid coefficient of thermal expansion");
+                return;
+            }
+            
+            if (isNaN(initialTemp)) {
+                showError("Please enter a valid initial temperature");
+                return;
+            }
+            
+            if (isNaN(finalTemp)) {
+                showError("Please enter a valid final temperature");
+                return;
+            }
+            
+            if (isNaN(initialLength)) {
+                showError("Please enter a valid initial length");
+                return;
+            }
+            
+            const deltaT = finalTemp - initialTemp;
+            const deltaL = initialLength * alpha * deltaT;
+            const finalLength = initialLength + deltaL;
+            
+            document.getElementById('formula-text').innerHTML = "ΔL = L₀ × α × ΔT";
+            
+            displayResult(`
+                <p><strong>Change in Length (ΔL):</strong> ${deltaL.toExponential(4)} m (${(deltaL*1000).toFixed(4)} mm)</p>
+                <p><strong>Final Length:</strong> ${finalLength.toFixed(6)} m</p>
+                <p><strong>Temperature Change (ΔT):</strong> ${deltaT} °C</p>
+                <p><strong>Coefficient (α):</strong> ${alpha.toExponential(6)} /°C</p>
+            `);
+        }
+        
+        function calculateAreaExpansion() {
+            const alpha = getAlphaValue();
+            const initialTemp = parseFloat(document.getElementById('initial-temp').value);
+            const finalTemp = parseFloat(document.getElementById('final-temp').value);
+            const initialLength = parseFloat(document.getElementById('initial-length').value);
+            
+            if (isNaN(alpha)) {
+                showError("Please enter a valid coefficient of thermal expansion");
+                return;
+            }
+            
+            if (isNaN(initialTemp) || isNaN(finalTemp) || isNaN(initialLength)) {
+                showError("Please enter valid values for all fields");
+                return;
+            }
+            
+            const deltaT = finalTemp - initialTemp;
+            const initialArea = initialLength * initialLength; // Assuming square for simplicity
+            const deltaA = initialArea * 2 * alpha * deltaT;
+            const finalArea = initialArea + deltaA;
+            
+            document.getElementById('formula-text').innerHTML = "ΔA = A₀ × 2α × ΔT";
+            
+            displayResult(`
+                <p><strong>Change in Area (ΔA):</strong> ${deltaA.toExponential(4)} m² (${(deltaA*1e6).toFixed(4)} mm²)</p>
+                <p><strong>Final Area:</strong> ${finalArea.toFixed(6)} m²</p>
+                <p><strong>Temperature Change (ΔT):</strong> ${deltaT} °C</p>
+                <p><strong>Coefficient (α):</strong> ${alpha.toExponential(6)} /°C</p>
+            `);
+        }
+        
+        function calculateVolumeExpansion() {
+            const alpha = getAlphaValue();
+            const initialTemp = parseFloat(document.getElementById('initial-temp').value);
+            const finalTemp = parseFloat(document.getElementById('final-temp').value);
+            const initialLength = parseFloat(document.getElementById('initial-length').value);
+            
+            if (isNaN(alpha)) {
+                showError("Please enter a valid coefficient of thermal expansion");
+                return;
+            }
+            
+            if (isNaN(initialTemp) || isNaN(finalTemp) || isNaN(initialLength)) {
+                showError("Please enter valid values for all fields");
+                return;
+            }
+            
+            const deltaT = finalTemp - initialTemp;
+            const initialVolume = initialLength * initialLength * initialLength; // Assuming cube for simplicity
+            const deltaV = initialVolume * 3 * alpha * deltaT;
+            const finalVolume = initialVolume + deltaV;
+            
+            document.getElementById('formula-text').innerHTML = "ΔV = V₀ × 3α × ΔT";
+            
+            displayResult(`
+                <p><strong>Change in Volume (ΔV):</strong> ${deltaV.toExponential(4)} m³ (${(deltaV*1e9).toFixed(4)} mm³)</p>
+                <p><strong>Final Volume:</strong> ${finalVolume.toFixed(6)} m³</p>
+                <p><strong>Temperature Change (ΔT):</strong> ${deltaT} °C</p>
+                <p><strong>Coefficient (α):</strong> ${alpha.toExponential(6)} /°C</p>
+            `);
+        }
+        
+        function getAlphaValue() {
+            if (materialSelect.value === 'custom') {
+                return parseFloat(document.getElementById('custom-alpha').value);
+            }
+            return parseFloat(materialSelect.value);
+        }
+        
+        function displayResult(content) {
+            document.getElementById('result').innerHTML = content;
+        }
+        
+        function showError(message) {
+            document.getElementById('result').innerHTML = `
+                <p style="color: var(--danger-color)">${message}</p>
+            `;
+        }
+
+        // Event listeners for buttons
+        document.getElementById('calculate-btn').addEventListener('click', calculateLinearExpansion);
+        document.getElementById('calculate-area-btn').addEventListener('click', calculateAreaExpansion);
+        document.getElementById('calculate-volume-btn').addEventListener('click', calculateVolumeExpansion);
+
+        // Allow form submission with Enter key
+        document.getElementById('signInEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitSignIn.click();
+            }
+        });
+
+        document.getElementById('signInPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitSignIn.click();
+            }
+        });
+
+        document.getElementById('signUpEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitSignUp.click();
+            }
+        });
+
+        document.getElementById('signUpPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitSignUp.click();
+            }
+        });
+
+        document.getElementById('forgotPasswordEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitForgotPassword.click();
+            }
+        });
+    </script>
+</body>
+</html>
